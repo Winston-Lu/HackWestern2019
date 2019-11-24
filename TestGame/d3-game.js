@@ -1,6 +1,6 @@
 (function() {
     "use strict";
-    let svg = d3.select("main")
+    let svg = d3.select("#game")
         .append("svg"),
         margin = {
             top: 10,
@@ -13,12 +13,14 @@
         },
         currentKeysPressed = [];
 
+    svg.attr('height', '100%')
+
     let canMove = false;
     let backgroundNum = 0;
     let dialog = 0;
     let nextScene = svg.append('rect')
         .attr("width", 50)
-        .attr("heigh", 50)
+        .attr("height", 50)
         .attr("x", 50)
         .attr("y", 50);
     let paddle = svg.append('svg:image');
@@ -76,12 +78,6 @@
     let left = {
         paddle: Paddle("left")(Screen().height / 2, Screen().height / 2)
     };
-    let svg1 = d3.select('body').append('svg').attr({
-        width: 300,
-        height: 300,
-        border: '1px solid #ccc'
-    });
-
 
     let facingRight = true;
     let isWalking = false;

@@ -1,12 +1,17 @@
 html,
 body,
 main {
-    height: 100%;
+    vertical-align: middle;
+    background-color: skyblue;
     padding: 0;
     margin: 0;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+}
+
+main {
+    height: 100vh;
 }
 
 svg {
@@ -28,4 +33,11 @@ line {
 .area {
     fill: white;
     stroke: "red";
+}
+
+.center {
+    padding-top: 4rem;
+    height: 90%;
+    margin: auto;
+    width: 90%;
 }
