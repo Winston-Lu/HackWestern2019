@@ -41,6 +41,7 @@ let googleVoice = "testing";
     let hint = svg.append('svg:image').attr('xlink:href', 'images/sprites/glow.png')
         .attr("x", 50).attr("y", 600)
         .attr("width", 400).attr("height", 200).attr("opacity", 0);
+    let mic;
     let nextDialog = false;
 
     // When a key is pressed, add it to the current keys array for further tracking
@@ -163,7 +164,6 @@ let googleVoice = "testing";
     svg.on("click", async function() {
 
         await $.get('getVoice', (data) => {
-            // console.log(data);
             googleVoice = data;
         })
 
@@ -215,13 +215,14 @@ let googleVoice = "testing";
                 text4.attr("opacity", 0);
                 text4_5 = svg.append('svg:image').attr('xlink:href', 'images/text/4.5.png');
                 text4_5.attr("x", 50).attr("y", 600).attr("width", 1000).attr("height", 200).attr("opacity", 1);
-                let mic = svg.append('svg:image').attr('xlink:href', 'images/mic.svg');
-                mic.attr("x", 500).attr("y", 600).attr("width", 50).attr("height", 50).attr("opacity", 1);
+                mic = svg.append('svg:image').attr('xlink:href', 'images/mic.svg');
+                mic.attr("x", 80).attr("y", 620).attr("width", 150).attr("height", 150).attr("opacity", 1);
                 dialog++;
             } else if (dialog === 7) {
-                if (googleVoice === "hello") {
+                if (googleVoice.includes("water")) {
                     console.log("Working");
                     text4_5.attr("opacity", 0);
+                    mic.attr("opacity", 0);
                     canMove = true;
                     dialog += 2;
                 }
@@ -264,7 +265,7 @@ let googleVoice = "testing";
             }
         }
         if (backgroundNum == 25) {
-            background.attr('xlink:href', 'images/stage/art1.png');
+            background.attr('xlink:href', 'images/stage/art1.png').attr("width", 1130).attr("height", 800);
             backgroundNum++;
         } else if (backgroundNum == 26) {
             background.attr('xlink:href', 'images/stage/art2.png').attr("width", 1130).attr("height", 800);
