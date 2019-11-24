@@ -15,16 +15,15 @@
 
     let canMove = false;
     let backgroundNum = 0;
+    let dialog = 0;
     let nextScene = svg.append('rect')
         .attr("width", 50)
         .attr("heigh", 50)
         .attr("x", 50)
         .attr("y", 50);
     let paddle = svg.append('svg:image');
-    let background = svg.append('svg:image')
-        .attr('xlink:href', 'images/stage/1.png');
+    let background = svg.append('svg:image').attr('xlink:href', 'images/stage/1.png');
 
-    // Add support for movement by keys
     // When a key is pressed, add it to the current keys array for further tracking
     d3.select("body").on("keydown", function() {
         if (currentKeysPressed.indexOf(d3.event.keyCode) != -1) { return }
@@ -34,15 +33,6 @@
     // When the key is relased, remove it from the array.
     d3.select("body").on("keyup", function() {
         currentKeysPressed.splice(currentKeysPressed.indexOf(d3.event.keyCode), 1);
-    });
-    svg.on("click", function() {
-        if (backgroundNum == 0) {
-            let paddle = d3.select('.left_paddle');
-            backgroundNum++;
-            background.attr('xlink:href', 'images/stage/2.png');
-            canMove = true;
-            paddle.attr("opacity", "1");
-        }
     });
     // always returns current SVG dimensions
     let Screen = function() {
@@ -93,14 +83,6 @@
     });
 
 
-
-    // detect window resize events (also captures orientation changes)
-    d3.select(window).on('resize', function() {
-        let screen = Screen();
-        left.paddle(screen.width / 2, screen.height / 2);
-    });
-
-    // Check if the paddle needs to be moved depending on current key presses
     let facingRight = true;
     let isWalking = false;
     let isStanding = true;
@@ -141,12 +123,13 @@
 
                 let newPaddleY = Math.max(margin.top,
                     Math.min(parse(paddle.attr("y")) + paddleDy,
-                        Screen().height - Screen().height * 0.003 - paddle.attr("height")));
+                        650));
 
                 let newPaddleX = Math.max(margin.left,
                     Math.min(parse(paddle.attr("x")) + paddleDx,
-                        Screen().width - Screen().width * 0.04 - paddle.attr("width")));
-                left.paddle(newPaddleX, newPaddleY);
+                        1040));
+                if (!blockedArea(paddle, paddleDx, paddleDy)) left.paddle(newPaddleX, newPaddleY);
+                checkTransistion();
             }
         }
         if (currentKeysPressed.length === 0) {
@@ -164,10 +147,107 @@
         }
     }
 
+    svg.on("click", function() {
+        if (backgroundNum == 0) {
+            let paddle = d3.select('.left_paddle');
+            backgroundNum++;
+            background.attr('xlink:href', 'images/stage/2.png');
+            canMove = true;
+            paddle.attr("opacity", "1");
+            return;
+        }
+        let paddle = d3.select('.left_paddle');
+        switch (backgroundNum) {
+            case 2:
+                if (inRange(paddle, 370, 630, 180, 250) && dialog == 0) {
+                    console.log("speech 1");
+                    dialog++;
+                }
+        }
+    });
 
+    function checkTransistion() {
+        let paddle = d3.select('.left_paddle');
+        console.log("x: " + paddle.attr("x") + " y: " + paddle.attr("y"));
+        switch (backgroundNum) {
+            case 1:
+                if (paddle.attr("x") > 840 && paddle.attr("y") > 480) {
+                    console.log("Transistion");
+                    backgroundNum++;
+                    background.attr('xlink:href', 'images/stage/3.png');
+                    left.paddle(50, 600);
+                }
+                break;
+            case 2:
+                //Previous
+                if (paddle.attr("x") < 50) {
+                    console.log("Transistion");
+                    backgroundNum--;
+                    background.attr('xlink:href', 'images/stage/2.png');
+                    left.paddle(830, 550);
+                }
+                //Next stage
+                if (paddle.attr("x") > 850 && paddle.attr("y") > 270) {
+                    console.log("Transistion");
+                    backgroundNum++;
+                    background.attr('xlink:href', 'images/stage/4.png');
+                    left.paddle(50, 300);
+                }
+                break;
+            case 3:
+                //Previous
+                if (paddle.attr("x") < 50) {
+                    console.log("Transistion");
+                    backgroundNum--;
+                    background.attr('xlink:href', 'images/stage/3.png');
+                    left.paddle(850, 600);
+                }
+                //Next
+                if (paddle.attr("x") > 1030) {
+                    console.log("Transistion");
+                    backgroundNum++;
+                    background.attr('xlink:href', 'images/stage/5.png');
+                    left.paddle(50, Math.max(250, paddle.attr("y")));
+                }
+            case 4:
+                //Previous
+                if (paddle.attr("x") < 50) {
+                    console.log("Transistion");
+                    backgroundNum--;
+                    background.attr('xlink:href', 'images/stage/4.png');
+                    left.paddle(1030, paddle.attr("y"));
+                }
+        }
+    }
 
-    // start animation timer that runs until a player scores
-    // then reset ball and start again
+    function inRange(sprite, minX, maxX, minY, maxY) {
+        return (sprite.attr("x") <= maxX && sprite.attr("x") >= minX && sprite.attr("y") > minY && sprite.attr("y") < maxY);
+    }
+
+    function blockedArea(sprite, dx, dy) {
+        let newX = parseInt(sprite.attr("x")) + parseInt(dx);
+        let newY = parseInt(sprite.attr("y")) + parseInt(dy);
+        console.log(newX + ' ' + newY);
+        switch (backgroundNum) {
+            case 0:
+                return (false);
+            case 1:
+                if (newY <= 170) return (true); //wall
+                else if (newX <= 240 && newY <= 370) return (true); //bed
+                else return (false);
+            case 2:
+                if (newY <= 140) return (true); //wall
+                if (newX >= 130 && newY >= 140 && newX <= 870 && newY <= 200) return (true); //sink
+                else return (false);
+            case 3:
+                if (newX > 380 && newY > 20 && newX < 630 && newY < 190) return (true);
+                return (false);
+            case 4:
+                if (newY <= 230) return (true);
+                return (false);
+        }
+    }
+
     function run() {
         d3.timer(function() {
             movePaddle();
