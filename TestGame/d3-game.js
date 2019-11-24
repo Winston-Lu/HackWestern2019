@@ -208,7 +208,7 @@
                 text5.attr("opacity", 0);
                 canMove = true;
                 dialog++;
-                hint.attr("opacity", 0.6).attr("x", 370).attr("y", 320);
+                hint.attr("opacity", 0.6).attr("x", 530).attr("y", 220).attr("width", 100);
             } else if (dialog === 10 && paddle.attr("x") >= 420 && paddle.attr("y") >= 210 && paddle.attr("x") <= 570 && paddle.attr("y") <= 240) {
                 dialog++;
                 hint.attr("opacity", 0.6).attr("x", 550).attr("y", 600);
