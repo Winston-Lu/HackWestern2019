@@ -24,9 +24,20 @@
         .attr("x", 50)
         .attr("y", 50);
     let text1;
-    let girl;
-    let paddle = svg.append('svg:image');
+    let text2;
+    let text3;
+    let text4;
+    let text5;
+    let text6;
     let background = svg.append('svg:image').attr('xlink:href', 'images/stage/1.png');
+    let girl = svg.append('svg:image').attr('xlink:href', 'images/sprites/girlright.gif');
+    girl.attr("x", 160).attr("y", 390)
+        .attr("width", 130).attr("height", 130)
+        .attr("opacity", 0);
+    let paddle = svg.append('svg:image');
+    let hint = svg.append('svg:image').attr('xlink:href', 'images/sprites/glow.png')
+        .attr("x", 50).attr("y", 600)
+        .attr("width", 400).attr("height", 200).attr("opacity", 0);
     let nextDialog = false;
 
     // When a key is pressed, add it to the current keys array for further tracking
@@ -57,7 +68,7 @@
                 .classed(which + "_paddle", true)
                 .attr({
                     'xlink:href': 'images/sprites/idleleft.gif',
-                    "opacity": "0"
+                    "opacity": "0",
                 }),
                 update = function(x, y) {
                     let height = Screen().height * 0.15;
@@ -147,28 +158,76 @@
     }
 
     svg.on("click", function() {
+        console.log(dialog);
         if (backgroundNum == 0 || backgroundNum == 1) {
             let paddle = d3.select('.left_paddle');
-            if (nextDialog) dialog++;
             if (dialog == 0) {
                 backgroundNum++;
                 background.attr('xlink:href', 'images/stage/2.png');
+                girl.attr("opacity", 1);
 
-                girl = svg.append('svg:image').attr('xlink:href', 'images/sprites/girlright.gif');
-                girl.attr("x", 160).attr("y", 390)
-                    .attr("width", 130).attr("height", 130);
                 paddle.attr("opacity", "1");
                 text1 = svg.append('svg:image').attr('xlink:href', 'images/text/1.png');
                 text1.attr("x", 50).attr("y", 600)
                     .attr("width", 1000).attr("height", 200);
-                d3.select('svg').raise();
-                nextDialog = true;
-                return;
-            }
-            if (dialog == 1) {
-                console.log("Skip text");
-                canMove = true;
+                dialog++;
+            } else if (dialog == 1) {
+                console.log(dialog);
                 text1.attr("opacity", 0);
+                text2 = svg.append('svg:image').attr('xlink:href', 'images/text/2.png');
+                text2.attr("x", 50).attr("y", 600)
+                    .attr("width", 1000).attr("height", 200).attr("opacity", 1);
+                dialog++;
+            } else if (dialog == 2) {
+                canMove = true;
+                text2.attr("opacity", 0);
+                dialog++;
+            }
+        }
+        if (backgroundNum == 2) {
+            let paddle = d3.select('.left_paddle');
+            if (dialog === 4) {
+                text3.attr("opacity", 0);
+                canMove = true;
+                dialog++;
+            } else if (dialog === 5 && paddle.attr("x") >= 430 && paddle.attr("y") >= 210 && paddle.attr("x") <= 600 && paddle.attr("y") <= 230) {
+                text4 = svg.append('svg:image').attr('xlink:href', 'images/text/4.png');
+                text4.attr("x", 50).attr("y", 600)
+                    .attr("width", 1000).attr("height", 200).attr("opacity", 1);
+                canMove = false;
+                dialog++;
+            } else if (dialog === 6) {
+                text4.attr("opacity", 0);
+                canMove = true;
+                dialog += 2;
+            }
+        }
+        if (backgroundNum === 3) {
+            let paddle = d3.select('.left_paddle');
+            if (dialog === 9) {
+                text5.attr("opacity", 0);
+                canMove = true;
+                dialog++;
+                hint.attr("opacity", 0.6).attr("x", 370).attr("y", 320);
+            } else if (dialog === 10 && paddle.attr("x") >= 420 && paddle.attr("y") >= 210 && paddle.attr("x") <= 570 && paddle.attr("y") <= 240) {
+                dialog++;
+                hint.attr("opacity", 0.6).attr("x", 550).attr("y", 600);
+            } else if (dialog === 11 && paddle.attr("x") >= 650 && paddle.attr("y") >= 370 && paddle.attr("x") <= 980 && paddle.attr("y") <= 590) {
+                dialog++;
+            }
+        }
+        if (backgroundNum === 4) {
+            let paddle = d3.select('.left_paddle');
+            if (dialog === 12 && paddle.attr('y') <= 260) {
+                text6 = svg.append('svg:image').attr('xlink:href', 'images/text/6.png');
+                text6.attr("x", 50).attr("y", 600)
+                    .attr("width", 1000).attr("height", 200).attr("opacity", 1);
+                canMove = false;
+                dialog++;
+            } else if (dialog === 13) {
+                text6.attr("opacity", 0);
+                canMove = true;
+                dialog++;
             }
         }
         let paddle = d3.select('.left_paddle');
@@ -187,41 +246,51 @@
         switch (backgroundNum) {
             case 1:
                 if (paddle.attr("x") > 840 && paddle.attr("y") > 480) {
-                    console.log("Transistion");
+                    girl.attr("opacity", '0');
                     backgroundNum++;
                     background.attr('xlink:href', 'images/stage/3.png');
-                    girl.attr("opacity", '0');
-                    left.paddle(50, 600);
+                    left.paddle(50, paddle.attr("y"));
+                    if (dialog === 3) {
+                        dialog++;
+                        hint.attr("opacity", 0);
+                        text3 = svg.append('svg:image').attr('xlink:href', 'images/text/3.png');
+                        text3.attr("x", 50).attr("y", 600)
+                            .attr("width", 1000).attr("height", 200).attr("opacity", 1);
+                        canMove = false;
+                    }
                 }
                 break;
             case 2:
                 //Previous
                 if (paddle.attr("x") < 50) {
-                    console.log("Transistion");
                     backgroundNum--;
                     background.attr('xlink:href', 'images/stage/2.png');
-                    girl.attr("opacity", '1');
                     left.paddle(830, 550);
+                    girl.attr("opacity", '1');
                 }
                 //Next stage
                 if (paddle.attr("x") > 850 && paddle.attr("y") > 270) {
-                    console.log("Transistion");
                     backgroundNum++;
                     background.attr('xlink:href', 'images/stage/4.png');
                     left.paddle(50, 300);
+                    if (dialog === 8) {
+                        text5 = svg.append('svg:image').attr('xlink:href', 'images/text/5.png');
+                        text5.attr("x", 50).attr("y", 600)
+                            .attr("width", 1000).attr("height", 200).attr("opacity", 1);
+                        canMove = false;
+                        dialog++;
+                    }
                 }
                 break;
             case 3:
                 //Previous
                 if (paddle.attr("x") < 50) {
-                    console.log("Transistion");
                     backgroundNum--;
                     background.attr('xlink:href', 'images/stage/3.png');
                     left.paddle(850, 600);
                 }
                 //Next
                 if (paddle.attr("x") > 1030) {
-                    console.log("Transistion");
                     backgroundNum++;
                     background.attr('xlink:href', 'images/stage/5.png');
                     left.paddle(50, Math.max(250, paddle.attr("y")));
@@ -229,7 +298,6 @@
             case 4:
                 //Previous
                 if (paddle.attr("x") < 50) {
-                    console.log("Transistion");
                     backgroundNum--;
                     background.attr('xlink:href', 'images/stage/4.png');
                     left.paddle(1030, paddle.attr("y"));
@@ -258,7 +326,7 @@
                 if (newX >= 130 && newY >= 140 && newX <= 870 && newY <= 200) return (true); //sink
                 else return (false);
             case 3:
-                if (newX > 380 && newY > 20 && newX < 630 && newY < 190) return (true);
+                if (newX > 380 && newY > 20 && newX < 630 && newY < 210) return (true); //water can
                 return (false);
             case 4:
                 if (newY <= 230) return (true);
