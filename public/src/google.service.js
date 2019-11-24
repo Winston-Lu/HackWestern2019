@@ -2,6 +2,12 @@ const recorder = require('node-record-lpcm16');
 const speech = require('@google-cloud/speech');
 const client = new speech.SpeechClient();
 
+let localSpeech = ''
+
+const returnSpeech = () => {
+  return localSpeech;
+}
+
 const startSpeech = () => {
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
@@ -23,12 +29,13 @@ const startSpeech = () => {
   const recognizeStream = client
     .streamingRecognize(request)
     .on('error', console.error)
-    .on('data', data =>
-      process.stdout.write(
+    .on('data', data => {
+      localSpeech = data.results[0].alternatives[0].transcript;
+      return process.stdout.write(
         data.results[0] && data.results[0].alternatives[0] ?
         `Transcription: ${data.results[0].alternatives[0].transcript}\n` :
         `\n\nReached transcription time limit, press Ctrl+C\n`
-      )
+      )}
     );
 
   // Start recording and send the microphone input to the Speech API
@@ -52,4 +59,5 @@ const startSpeech = () => {
 module.exports = {
   startAPI: startSpeech,
   GOOGLE_VOICE_API_KEY: '200e4d64ab2a5855fa2e85c512432273e03773f4',
+  speechContent: returnSpeech,
 };

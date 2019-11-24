@@ -1,4 +1,5 @@
-let googleVoice;
+let googleVoice = "testing";
+
 (function() {
     let svg = d3.select("#game")
         .append("svg"),
@@ -114,7 +115,6 @@ let googleVoice;
              *   39 = Right Arrow
              */
             if (currentKeyPressed && [38, 40, 83, 87, 37, 65, 39, 68].indexOf(currentKeyPressed) != -1 && canMove) {
-                console.log("check");
                 let directionUp = [38, 87].indexOf(currentKeyPressed) != -1;
                 let directionDown = [40, 83].indexOf(currentKeyPressed) != -1;
                 let directionLeft = [37, 65].indexOf(currentKeyPressed) != -1;
@@ -160,8 +160,14 @@ let googleVoice;
         }
     }
 
-    svg.on("click", function() {
-        console.log(dialog + " " + backgroundNum);
+    svg.on("click", async function() {
+
+        await $.get('getVoice', (data) => {
+            // console.log(data);
+            googleVoice = data;
+        })
+
+        console.log(googleVoice);
         if (backgroundNum == 0 || backgroundNum == 1) {
             let paddle = d3.select('.left_paddle');
             if (dialog == 0) {
@@ -213,7 +219,8 @@ let googleVoice;
                 mic.attr("x", 500).attr("y", 600).attr("width", 50).attr("height", 50).attr("opacity", 1);
                 dialog++;
             } else if (dialog === 7) {
-                if (getSpeech == "hello") {
+                if (googleVoice === "hello") {
+                    console.log("Working");
                     text4_5.attr("opacity", 0);
                     canMove = true;
                     dialog += 2;
@@ -279,7 +286,6 @@ let googleVoice;
 
     function checkTransistion() {
         let paddle = d3.select('.left_paddle');
-        console.log("x: " + paddle.attr("x") + " y: " + paddle.attr("y"));
         switch (backgroundNum) {
             case 1:
                 if (paddle.attr("x") > 840 && paddle.attr("y") > 480) {
@@ -388,7 +394,4 @@ let googleVoice;
     run();
 })();
 
-function getSpeech(words) {
-    googleVoice = words;
-}
 document.body.addEventListener('touchstart', function(e) { e.preventDefault(); });

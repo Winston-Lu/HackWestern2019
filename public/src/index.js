@@ -13,4 +13,9 @@ app.use(express.static(__dirname + '/html'));
 
 app.get('/game', (req, res) => runVoice(res))
 
+app.get('/getVoice', (req, res) => {
+  console.log(googleService.speechContent());
+  res.send(googleService.speechContent())
+});
+
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`))
