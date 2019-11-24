@@ -19,11 +19,6 @@ let googleVoice = "testing";
     let canMove = false;
     let backgroundNum = 0;
     let dialog = 0;
-    let nextScene = svg.append('rect')
-        .attr("width", 50)
-        .attr("height", 50)
-        .attr("x", 50)
-        .attr("y", 50);
     let text1;
     let text2;
     let text3;
@@ -37,7 +32,7 @@ let googleVoice = "testing";
     girl.attr("x", 160).attr("y", 390)
         .attr("width", 130).attr("height", 130)
         .attr("opacity", 0);
-    let paddle = svg.append('svg:image');
+    let player = svg.append('svg:image');
     let hint = svg.append('svg:image').attr('xlink:href', 'images/sprites/glow.png')
         .attr("x", 50).attr("y", 600)
         .attr("width", 400).attr("height", 200).attr("opacity", 0);
@@ -61,22 +56,22 @@ let googleVoice = "testing";
                 height: parse(svg.style("height"))
             };
         },
-        // generates a paddle, returns function for updating its position
-        Paddle = function(which) {
+        // generates a player, returns function for updating its position
+        Player = function(which) {
             let width = 0,
                 area = svg.append('rect')
                 .classed('area', true)
                 .attr({ width: width * 7 }),
-                paddle = svg.append('svg:image')
-                .classed('paddle', true)
-                .classed(which + "_paddle", true)
+                player = svg.append('svg:image')
+                .classed('player', true)
+                .classed(which + "_player", true)
                 .attr({
                     'xlink:href': 'images/sprites/idleleft.gif',
                     "opacity": "0",
                 }),
                 update = function(x, y) {
                     let height = Screen().height * 0.15;
-                    paddle.attr({
+                    player.attr({
                         x: x,
                         y: y,
                         height: height
@@ -94,15 +89,15 @@ let googleVoice = "testing";
 
     // generate starting scene
     let left = {
-        paddle: Paddle("left")(310, 390)
+        player: Player("left")(310, 390)
     };
 
     let facingRight = true;
     let isWalking = false;
     let isStanding = true;
 
-    function movePaddle() {
-        let paddle = d3.select('.left_paddle');
+    function movePlayer() {
+        let player = d3.select('.left_player');
         for (let i = 0; i < currentKeysPressed.length; i++) {
             let currentKeyPressed = currentKeysPressed[i];
             /*  Key Codes:
@@ -122,38 +117,38 @@ let googleVoice = "testing";
                 let directionRight = [39, 68].indexOf(currentKeyPressed) != -1;
 
 
-                let paddleDy = 10 * ((directionUp ? -1 : 0) + (directionDown ? 1 : 0));
-                let paddleDx = 10 * ((directionLeft ? -1 : 0) + (directionRight ? 1 : 0));
+                let playerDy = 10 * ((directionUp ? -1 : 0) + (directionDown ? 1 : 0));
+                let playerDx = 10 * ((directionLeft ? -1 : 0) + (directionRight ? 1 : 0));
 
-                if (paddleDx > 0 || (paddleDy != 0 && facingRight)) {
-                    if (isStanding || !facingRight) paddle.attr('xlink:href', `images/sprites/walkright.gif`);
+                if (playerDx > 0 || (playerDy != 0 && facingRight)) {
+                    if (isStanding || !facingRight) player.attr('xlink:href', `images/sprites/walkright.gif`);
                     facingRight = true;
-                } else if (paddleDx < 0 || (paddleDy != 0 && !facingRight)) {
-                    if (isStanding || facingRight) paddle.attr('xlink:href', `images/sprites/walkleft.gif`);
+                } else if (playerDx < 0 || (playerDy != 0 && !facingRight)) {
+                    if (isStanding || facingRight) player.attr('xlink:href', `images/sprites/walkleft.gif`);
                     facingRight = false;
                 }
                 isStanding = false;
                 isWalking = true;
 
-                let newPaddleY = Math.max(margin.top,
-                    Math.min(parse(paddle.attr("y")) + paddleDy,
+                let newPlayerY = Math.max(margin.top,
+                    Math.min(parse(player.attr("y")) + playerDy,
                         650));
 
-                let newPaddleX = Math.max(margin.left,
-                    Math.min(parse(paddle.attr("x")) + paddleDx,
+                let newPlayerX = Math.max(margin.left,
+                    Math.min(parse(player.attr("x")) + playerDx,
                         1040));
-                if (!blockedArea(paddle, paddleDx, paddleDy)) left.paddle(newPaddleX, newPaddleY);
+                if (!blockedArea(player, playerDx, playerDy)) left.player(newPlayerX, newPlayerY);
                 checkTransistion();
             }
         }
         if (currentKeysPressed.length === 0) {
             if (facingRight) {
                 if (isWalking) {
-                    paddle.attr('xlink:href', `images/sprites/idleright.gif`);
+                    player.attr('xlink:href', `images/sprites/idleright.gif`);
                 }
             } else {
                 if (isWalking) {
-                    paddle.attr('xlink:href', `images/sprites/idleleft.gif`);
+                    player.attr('xlink:href', `images/sprites/idleleft.gif`);
                 }
             }
             isWalking = false;
@@ -169,13 +164,13 @@ let googleVoice = "testing";
 
         console.log(googleVoice);
         if (backgroundNum == 0 || backgroundNum == 1) {
-            let paddle = d3.select('.left_paddle');
+            let player = d3.select('.left_player');
             if (dialog == 0) {
                 backgroundNum++;
                 background.attr('xlink:href', 'images/stage/2.png');
                 girl.attr("opacity", 1);
 
-                paddle.attr("opacity", "1");
+                player.attr("opacity", "1");
                 text1 = svg.append('svg:image').attr('xlink:href', 'images/text/1.png');
                 text1.attr("x", 50).attr("y", 600)
                     .attr("width", 1000).attr("height", 200);
@@ -190,22 +185,22 @@ let googleVoice = "testing";
                 canMove = true;
                 text2.attr("opacity", 0);
                 dialog++;
-            } else if (dialog == 14 && paddle.attr("x") >= 480 && paddle.attr("y") >= 180 && paddle.attr("x") <= 600 && paddle.attr("y") <= 260) {
+            } else if (dialog == 14 && player.attr("x") >= 480 && player.attr("y") >= 180 && player.attr("x") <= 600 && player.attr("y") <= 260) {
                 dialog++
                 backgroundNum = 25;
                 background.attr('xlink:href', 'images/stage/art1.png');
-                paddle.attr("opacity", 0);
+                player.attr("opacity", 0);
                 girl.attr("opacity", 0);
                 hint.attr("opacity", 0);
             }
         }
         if (backgroundNum == 2) {
-            let paddle = d3.select('.left_paddle');
+            let player = d3.select('.left_player');
             if (dialog === 4) {
                 text3.attr("opacity", 0);
                 canMove = true;
                 dialog++;
-            } else if (dialog === 5 && paddle.attr("x") >= 430 && paddle.attr("y") >= 210 && paddle.attr("x") <= 600 && paddle.attr("y") <= 230) {
+            } else if (dialog === 5 && player.attr("x") >= 430 && player.attr("y") >= 210 && player.attr("x") <= 600 && player.attr("y") <= 230) {
                 text4 = svg.append('svg:image').attr('xlink:href', 'images/text/4.png');
                 text4.attr("x", 50).attr("y", 600)
                     .attr("width", 1000).attr("height", 200).attr("opacity", 1);
@@ -229,8 +224,8 @@ let googleVoice = "testing";
             }
         }
         if (backgroundNum === 3) {
-            let paddle = d3.select('.left_paddle');
-            if (dialog === 9 && paddle.attr("x") >= 420 && paddle.attr("y") >= 210 && paddle.attr("x") <= 570 && paddle.attr("y") <= 260) {
+            let player = d3.select('.left_player');
+            if (dialog === 9 && player.attr("x") >= 420 && player.attr("y") >= 210 && player.attr("x") <= 570 && player.attr("y") <= 260) {
                 hint.attr("opacity", 0.6).attr("x", 650).attr("y", 500).attr("width", 400);
                 dialog++;
             } else if (dialog == 10) {
@@ -242,15 +237,15 @@ let googleVoice = "testing";
                 hint.attr("opacity", 0);
                 background.attr('xlink:href', 'images/stage/4wilted.png');
                 isWilted = true;
-            } else if (dialog === 11 && paddle.attr("x") >= 650 && paddle.attr("y") >= 370 && paddle.attr("x") <= 980 && paddle.attr("y") <= 590) {
+            } else if (dialog === 11 && player.attr("x") >= 650 && player.attr("y") >= 370 && player.attr("x") <= 980 && player.attr("y") <= 590) {
                 text5.attr("opacity", 0);
                 canMove = true;
                 dialog++;
             }
         }
         if (backgroundNum === 4) {
-            let paddle = d3.select('.left_paddle');
-            if (dialog === 12 && (paddle.attr('y') <= 260 || (paddle.attr('x') >= 430 && paddle.attr('x' <= 720) && paddle.attr('y') >= 240 && paddle.attr('y') <= 400))) {
+            let player = d3.select('.left_player');
+            if (dialog === 12 && (player.attr('y') <= 260 || (player.attr('x') >= 430 && player.attr('x' <= 720) && player.attr('y') >= 240 && player.attr('y') <= 400))) {
                 text6 = svg.append('svg:image').attr('xlink:href', 'images/text/6.png');
                 text6.attr("x", 50).attr("y", 600)
                     .attr("width", 1000).attr("height", 200).attr("opacity", 1);
@@ -276,24 +271,24 @@ let googleVoice = "testing";
         } else if (backgroundNum == 28) {
             background.attr('xlink:href', 'images/stage/art4.png').attr("width", 1130).attr("height", 800);
         }
-        let paddle = d3.select('.left_paddle');
+        let player = d3.select('.left_player');
         switch (backgroundNum) {
             case 2:
-                if (inRange(paddle, 370, 630, 180, 250) && dialog == 0) {
+                if (inRange(player, 370, 630, 180, 250) && dialog == 0) {
                     dialog++;
                 }
         }
     });
 
     function checkTransistion() {
-        let paddle = d3.select('.left_paddle');
+        let player = d3.select('.left_player');
         switch (backgroundNum) {
             case 1:
-                if (paddle.attr("x") > 840 && paddle.attr("y") > 480) {
+                if (player.attr("x") > 840 && player.attr("y") > 480) {
                     girl.attr("opacity", '0');
                     backgroundNum++;
                     background.attr('xlink:href', 'images/stage/3.png');
-                    left.paddle(50, paddle.attr("y"));
+                    left.player(50, player.attr("y"));
                     if (dialog === 3) {
                         dialog++;
                         hint.attr("opacity", 0);
@@ -306,21 +301,21 @@ let googleVoice = "testing";
                 break;
             case 2:
                 //Previous
-                if (paddle.attr("x") < 50) {
+                if (player.attr("x") < 50) {
                     backgroundNum--;
                     background.attr('xlink:href', 'images/stage/2.png');
-                    left.paddle(830, 550);
+                    left.player(830, 550);
                     girl.attr("opacity", '1');
                     if (dialog == 14) {
                         hint.attr("opacity", 0.6).attr("x", 525).attr("y", 240).attr("width", 110);
                     }
                 }
                 //Next stage
-                if (paddle.attr("x") > 850 && paddle.attr("y") > 270) {
+                if (player.attr("x") > 850 && player.attr("y") > 270) {
                     backgroundNum++;
                     if (isWilted) background.attr('xlink:href', 'images/stage/4wilted.png');
                     else background.attr('xlink:href', 'images/stage/4.png');
-                    left.paddle(50, 300);
+                    left.player(50, 300);
                     if (dialog === 9) {
                         hint.attr("opacity", 0.6).attr("x", 470).attr("y", 250).attr("width", 110);
                     } else if (dialog == 14) {
@@ -330,29 +325,29 @@ let googleVoice = "testing";
                 break;
             case 3:
                 //Previous
-                if (paddle.attr("x") < 50) {
+                if (player.attr("x") < 50) {
                     backgroundNum--;
                     background.attr('xlink:href', 'images/stage/3.png');
-                    left.paddle(850, 600);
+                    left.player(850, 600);
                     if (dialog != 14) hint.attr("opacity", 0);
                     else hint.attr("opacity", 0.6);
                 }
                 //Next
-                if (paddle.attr("x") > 1030) {
+                if (player.attr("x") > 1030) {
                     backgroundNum++;
                     background.attr('xlink:href', 'images/stage/5.png');
-                    left.paddle(50, Math.max(250, paddle.attr("y")));
+                    left.player(50, Math.max(250, player.attr("y")));
                     if (dialog === 12) {
                         hint.attr("opacity", 0.6).attr("x", 430).attr("y", 300).attr("width", 280);
                     }
                 }
             case 4:
                 //Previous
-                if (paddle.attr("x") < 50) {
+                if (player.attr("x") < 50) {
                     backgroundNum--;
                     if (isWilted) background.attr('xlink:href', 'images/stage/4wilted.png');
                     else background.attr('xlink:href', 'images/stage/4.png');
-                    left.paddle(1030, paddle.attr("y"));
+                    left.player(1030, player.attr("y"));
                     if (dialog != 14) hint.attr("opacity", 0);
                 }
         }
@@ -388,7 +383,7 @@ let googleVoice = "testing";
 
     function run() {
         d3.timer(function() {
-            movePaddle();
+            movePlayer();
             return false;
         }, 500);
     };
