@@ -1,0 +1,23 @@
+{
+  "name": "hackwestern2019",
+  "version": "1.0.0",
+  "description": "Repository for HackWestern 2019",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./public/src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Winston-Lu/HackWestern2019.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Winston-Lu/HackWestern2019/issues"
+  },
+  "homepage": "https://github.com/Winston-Lu/HackWestern2019#readme",
+  "dependencies": {
+    "express.js": "^1.0.0"
+  }
+}
