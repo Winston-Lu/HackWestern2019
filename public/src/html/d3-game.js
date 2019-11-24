@@ -1,5 +1,5 @@
+let googleVoice;
 (function() {
-    "use strict";
     let svg = d3.select("#game")
         .append("svg"),
         margin = {
@@ -210,13 +210,14 @@
                 text4_5 = svg.append('svg:image').attr('xlink:href', 'images/text/4.5.png');
                 text4_5.attr("x", 50).attr("y", 600).attr("width", 1000).attr("height", 200).attr("opacity", 1);
                 let mic = svg.append('svg:image').attr('xlink:href', 'images/mic.svg');
-                text4_5.attr("x", 500).attr("y", 600).attr("width", 50).attr("height", 50).attr("opacity", 1);
+                mic.attr("x", 500).attr("y", 600).attr("width", 50).attr("height", 50).attr("opacity", 1);
                 dialog++;
             } else if (dialog === 7) {
-
-                text4_5.attr("opacity", 0);
-                canMove = true;
-                dialog += 2;
+                if (getSpeech == "hello") {
+                    text4_5.attr("opacity", 0);
+                    canMove = true;
+                    dialog += 2;
+                }
             }
         }
         if (backgroundNum === 3) {
@@ -387,4 +388,7 @@
     run();
 })();
 
+function getSpeech(words) {
+    googleVoice = words;
+}
 document.body.addEventListener('touchstart', function(e) { e.preventDefault(); });
