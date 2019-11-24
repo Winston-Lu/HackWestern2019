@@ -1,10 +1,11 @@
 const express = require('express')
 const app = express()
 const PORT = (process.env.PORT || 3000);
+const googleService = require('./google.service')
 
 const runVoice = (res) => {
   res.sendFile(`${__dirname}/html/index.html`)
-  console.log('WASSSUP')
+  googleService.startAPI();
 }
 
 app.use(express.static(__dirname));

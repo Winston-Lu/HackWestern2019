@@ -18,6 +18,13 @@
   },
   "homepage": "https://github.com/Winston-Lu/HackWestern2019#readme",
   "dependencies": {
-    "express.js": "^1.0.0"
+    "@google-cloud/speech": "^3.4.0",
+    "express.js": "^1.0.0",
+    "node-record-lpcm16": "^1.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/register": "^7.7.4"
   }
 }
