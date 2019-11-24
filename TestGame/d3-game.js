@@ -27,10 +27,8 @@
     let text2;
     let text3;
     let text4;
-    let text4_5;
     let text5;
     let text6;
-    let isWilted = false;
     let background = svg.append('svg:image').attr('xlink:href', 'images/stage/1.png');
     let girl = svg.append('svg:image').attr('xlink:href', 'images/sprites/girlright.gif');
     girl.attr("x", 160).attr("y", 390)
@@ -161,7 +159,7 @@
     }
 
     svg.on("click", function() {
-        console.log(dialog + " " + backgroundNum);
+        console.log(dialog);
         if (backgroundNum == 0 || backgroundNum == 1) {
             let paddle = d3.select('.left_paddle');
             if (dialog == 0) {
@@ -184,13 +182,6 @@
                 canMove = true;
                 text2.attr("opacity", 0);
                 dialog++;
-            } else if (dialog == 14 && paddle.attr("x") >= 480 && paddle.attr("y") >= 180 && paddle.attr("x") <= 600 && paddle.attr("y") <= 260) {
-                dialog++
-                backgroundNum = 25;
-                background.attr('xlink:href', 'images/stage/art1.png');
-                paddle.attr("opacity", 0);
-                girl.attr("opacity", 0);
-                hint.attr("opacity", 0);
             }
         }
         if (backgroundNum == 2) {
@@ -207,62 +198,37 @@
                 dialog++;
             } else if (dialog === 6) {
                 text4.attr("opacity", 0);
-                text4_5 = svg.append('svg:image').attr('xlink:href', 'images/text/4.5.png');
-                text4_5.attr("x", 50).attr("y", 600).attr("width", 1000).attr("height", 200).attr("opacity", 1);
-                dialog++;
-            } else if (dialog === 7) {
-                text4_5.attr("opacity", 0);
                 canMove = true;
                 dialog += 2;
             }
         }
         if (backgroundNum === 3) {
             let paddle = d3.select('.left_paddle');
-            if (dialog === 9 && paddle.attr("x") >= 420 && paddle.attr("y") >= 210 && paddle.attr("x") <= 570 && paddle.attr("y") <= 260) {
-                hint.attr("opacity", 0.6).attr("x", 650).attr("y", 500).attr("width", 400);
-                dialog++;
-            } else if (dialog == 10) {
-                text5 = svg.append('svg:image').attr('xlink:href', 'images/text/5.png');
-                text5.attr("x", 50).attr("y", 600)
-                    .attr("width", 1000).attr("height", 200).attr("opacity", 1);
-                canMove = false;
-                dialog++;
-                hint.attr("opacity", 0);
-                background.attr('xlink:href', 'images/stage/4wilted.png');
-                isWilted = true;
-            } else if (dialog === 11 && paddle.attr("x") >= 650 && paddle.attr("y") >= 370 && paddle.attr("x") <= 980 && paddle.attr("y") <= 590) {
+            if (dialog === 9) {
                 text5.attr("opacity", 0);
                 canMove = true;
+                dialog++;
+                hint.attr("opacity", 0.6).attr("x", 30).attr("y", 30).attr("width", 100);
+            } else if (dialog === 10 && paddle.attr("x") >= 420 && paddle.attr("y") >= 210 && paddle.attr("x") <= 570 && paddle.attr("y") <= 240) {
+                dialog++;
+                hint.attr("opacity", 0.6).attr("x", 550).attr("y", 600);
+            } else if (dialog === 11 && paddle.attr("x") >= 650 && paddle.attr("y") >= 370 && paddle.attr("x") <= 980 && paddle.attr("y") <= 590) {
                 dialog++;
             }
         }
         if (backgroundNum === 4) {
             let paddle = d3.select('.left_paddle');
-            if (dialog === 12 && (paddle.attr('y') <= 260 || (paddle.attr('x') >= 430 && paddle.attr('x' <= 720) && paddle.attr('y') >= 240 && paddle.attr('y') <= 400))) {
+            if (dialog === 12 && paddle.attr('y') <= 260) {
                 text6 = svg.append('svg:image').attr('xlink:href', 'images/text/6.png');
                 text6.attr("x", 50).attr("y", 600)
                     .attr("width", 1000).attr("height", 200).attr("opacity", 1);
                 canMove = false;
                 dialog++;
-                hint.attr("opacity", 0);
             } else if (dialog === 13) {
                 text6.attr("opacity", 0);
                 canMove = true;
                 dialog++;
-                hint.attr("opacity", 0.6).attr("x", -80).attr("y", 500).attr("width", 400);
             }
-        }
-        if (backgroundNum == 25) {
-            background.attr('xlink:href', 'images/stage/art1.png');
-            backgroundNum++;
-        } else if (backgroundNum == 26) {
-            background.attr('xlink:href', 'images/stage/art2.png').attr("width", 1130).attr("height", 800);
-            backgroundNum++;
-        } else if (backgroundNum == 27) {
-            background.attr('xlink:href', 'images/stage/art3.png').attr("width", 1130).attr("height", 800);
-            backgroundNum++;
-        } else if (backgroundNum == 28) {
-            background.attr('xlink:href', 'images/stage/art4.png').attr("width", 1130).attr("height", 800);
         }
         let paddle = d3.select('.left_paddle');
         switch (backgroundNum) {
@@ -300,20 +266,18 @@
                     background.attr('xlink:href', 'images/stage/2.png');
                     left.paddle(830, 550);
                     girl.attr("opacity", '1');
-                    if (dialog == 14) {
-                        hint.attr("opacity", 0.6).attr("x", 525).attr("y", 240).attr("width", 110);
-                    }
                 }
                 //Next stage
                 if (paddle.attr("x") > 850 && paddle.attr("y") > 270) {
                     backgroundNum++;
-                    if (isWilted) background.attr('xlink:href', 'images/stage/4wilted.png');
-                    else background.attr('xlink:href', 'images/stage/4.png');
+                    background.attr('xlink:href', 'images/stage/4.png');
                     left.paddle(50, 300);
-                    if (dialog === 9) {
-                        hint.attr("opacity", 0.6).attr("x", 470).attr("y", 250).attr("width", 110);
-                    } else if (dialog == 14) {
-                        hint.attr("opacity", 0.6);
+                    if (dialog === 8) {
+                        text5 = svg.append('svg:image').attr('xlink:href', 'images/text/5.png');
+                        text5.attr("x", 50).attr("y", 600)
+                            .attr("width", 1000).attr("height", 200).attr("opacity", 1);
+                        canMove = false;
+                        dialog++;
                     }
                 }
                 break;
@@ -323,26 +287,19 @@
                     backgroundNum--;
                     background.attr('xlink:href', 'images/stage/3.png');
                     left.paddle(850, 600);
-                    if (dialog != 14) hint.attr("opacity", 0);
-                    else hint.attr("opacity", 0.6);
                 }
                 //Next
                 if (paddle.attr("x") > 1030) {
                     backgroundNum++;
                     background.attr('xlink:href', 'images/stage/5.png');
                     left.paddle(50, Math.max(250, paddle.attr("y")));
-                    if (dialog === 12) {
-                        hint.attr("opacity", 0.6).attr("x", 430).attr("y", 300).attr("width", 280);
-                    }
                 }
             case 4:
                 //Previous
                 if (paddle.attr("x") < 50) {
                     backgroundNum--;
-                    if (isWilted) background.attr('xlink:href', 'images/stage/4wilted.png');
-                    else background.attr('xlink:href', 'images/stage/4.png');
+                    background.attr('xlink:href', 'images/stage/4.png');
                     left.paddle(1030, paddle.attr("y"));
-                    if (dialog != 14) hint.attr("opacity", 0);
                 }
         }
     }
