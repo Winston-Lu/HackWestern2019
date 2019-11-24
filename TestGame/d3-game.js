@@ -23,8 +23,11 @@
         .attr("height", 50)
         .attr("x", 50)
         .attr("y", 50);
+    let text1;
+    let girl;
     let paddle = svg.append('svg:image');
     let background = svg.append('svg:image').attr('xlink:href', 'images/stage/1.png');
+    let nextDialog = false;
 
     // When a key is pressed, add it to the current keys array for further tracking
     d3.select("body").on("keydown", function() {
@@ -53,7 +56,7 @@
                 .classed('paddle', true)
                 .classed(which + "_paddle", true)
                 .attr({
-                    'xlink:href': 'images/sprites/idleright.gif',
+                    'xlink:href': 'images/sprites/idleleft.gif',
                     "opacity": "0"
                 }),
                 update = function(x, y) {
@@ -76,7 +79,7 @@
 
     // generate starting scene
     let left = {
-        paddle: Paddle("left")(Screen().height / 2, Screen().height / 2)
+        paddle: Paddle("left")(310, 390)
     };
 
     let facingRight = true;
@@ -144,13 +147,29 @@
     }
 
     svg.on("click", function() {
-        if (backgroundNum == 0) {
+        if (backgroundNum == 0 || backgroundNum == 1) {
             let paddle = d3.select('.left_paddle');
-            backgroundNum++;
-            background.attr('xlink:href', 'images/stage/2.png');
-            canMove = true;
-            paddle.attr("opacity", "1");
-            return;
+            if (nextDialog) dialog++;
+            if (dialog == 0) {
+                backgroundNum++;
+                background.attr('xlink:href', 'images/stage/2.png');
+
+                girl = svg.append('svg:image').attr('xlink:href', 'images/sprites/girlright.gif');
+                girl.attr("x", 160).attr("y", 390)
+                    .attr("width", 130).attr("height", 130);
+                paddle.attr("opacity", "1");
+                text1 = svg.append('svg:image').attr('xlink:href', 'images/text/1.png');
+                text1.attr("x", 50).attr("y", 600)
+                    .attr("width", 1000).attr("height", 200);
+                d3.select('svg').raise();
+                nextDialog = true;
+                return;
+            }
+            if (dialog == 1) {
+                console.log("Skip text");
+                canMove = true;
+                text1.attr("opacity", 0);
+            }
         }
         let paddle = d3.select('.left_paddle');
         switch (backgroundNum) {
@@ -171,6 +190,7 @@
                     console.log("Transistion");
                     backgroundNum++;
                     background.attr('xlink:href', 'images/stage/3.png');
+                    girl.attr("opacity", '0');
                     left.paddle(50, 600);
                 }
                 break;
@@ -180,6 +200,7 @@
                     console.log("Transistion");
                     backgroundNum--;
                     background.attr('xlink:href', 'images/stage/2.png');
+                    girl.attr("opacity", '1');
                     left.paddle(830, 550);
                 }
                 //Next stage
@@ -230,6 +251,7 @@
             case 1:
                 if (newY <= 170) return (true); //wall
                 else if (newX <= 240 && newY <= 370) return (true); //bed
+                else if (newX <= 250 && newY <= 400 && newX >= 140) return (true);
                 else return (false);
             case 2:
                 if (newY <= 140) return (true); //wall
