@@ -158,9 +158,9 @@ let googleVoice = "testing";
 
     svg.on("click", async function() {
 
-        await $.get('getVoice', (data) => {
-            googleVoice = data;
-        })
+        //await $.get('getVoice', (data) => {
+        //    googleVoice = data;
+        //})
 
         console.log(googleVoice);
         if (backgroundNum == 0 || backgroundNum == 1) {
@@ -214,13 +214,12 @@ let googleVoice = "testing";
                 mic.attr("x", 80).attr("y", 620).attr("width", 150).attr("height", 150).attr("opacity", 1);
                 dialog++;
             } else if (dialog === 7) {
-                if (googleVoice.includes("water")) {
-                    console.log("Working");
-                    text4_5.attr("opacity", 0);
-                    mic.attr("opacity", 0);
-                    canMove = true;
-                    dialog += 2;
-                }
+                //if (googleVoice.includes("water")) {
+                text4_5.attr("opacity", 0);
+                mic.attr("opacity", 0);
+                canMove = true;
+                dialog += 2;
+                //}
             }
         }
         if (backgroundNum === 3) {
